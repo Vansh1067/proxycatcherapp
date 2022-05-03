@@ -38,7 +38,7 @@ const Bar=({total,complete,height,color,text,children})=>{
   
   }
   const SubBar=({height,color,complete})=>{
-    return <View style={{height:height,backgroundColor:color,width:40,alignItems:'center',justifyContent:'flex-end',paddingBottom:5,alignSelf:'flex-end'}}>
+    return <View style={{height:`${height}%`,backgroundColor:color,width:40,alignItems:'center',justifyContent:'flex-end',paddingBottom:5,alignSelf:'flex-end'}}>
             <Text style={{...styles.BarText,marginVertical:8}}>{height}</Text>
             <Text style={styles.BarText}>{complete}</Text>
   

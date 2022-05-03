@@ -44,12 +44,14 @@ const Teachers=(props)=>{
     }
     const addHandler=(val)=>{
       
-     const index= props.teacher.findIndex(value=>val===value)
+     const index= props.teacher.findIndex(value=>val._id===value.userId)
      if(index>-1){
-      const filterArray=props.teacher.filter((value,i)=>value!==val)
+      const filterArray=props.teacher.filter((value,i)=>value.userId!==val._id)
       props.setTeachers([...filterArray])
      }else{
-        props.setTeachers([...props.teacher,val])
+      const d={userId:val._id}
+
+        props.setTeachers([...props.teacher,d])
      }
     }
     const  handleBackPress = () => {
@@ -87,7 +89,7 @@ const Teachers=(props)=>{
             return   <VideoThumbnail views={`${val.branch} DEPT`} title={`${val.name}`}  role={val.role}buttontext={'View Details'}  onPress={()=>props.navigation.navigate('Profile',{userId:val._id,approve:true,setRefresh:setRefresh,refresh:refresh})} onClick={()=>{props.navigation.navigate('Profile',{userId:val._id,approve:true,setRefresh:setRefresh,refresh:refresh})}}/>
 
          }else{
-            const index= props.teacher.findIndex(value=>val._id===value)
+            const index= props.teacher.findIndex(value=>val._id===value.userId)
             if(index>-1){
               return   <VideoThumbnail views={`${val.branch} DEPT`} title={`${val.name} `} role={val.role} select={1} onPress={()=>props.navigation.navigate('Profile',{userId:val._id})} onClick={()=>{addHandler(val)}}/>
 

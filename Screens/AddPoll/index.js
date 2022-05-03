@@ -1,15 +1,16 @@
 import React, { useState,useEffect } from 'react'
 import {View,BackHandler,TextInput, AsyncStorage,ToastAndroid} from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
-import { Container, Paragraph ,Header, Row, Buttons,Title, Input,Popup} from '../../shared'
+import { Container, Paragraph ,Header, Row, Buttons,Title, Input,Popup, Spinner} from '../../shared'
 import {RadioGroup, RadioButton} from 'react-native-flexi-radio-button'
 import styles from './styles'
 import Icon  from 'react-native-vector-icons/AntDesign'
+import { CreatePoll } from '../../Store/Poll/action'
 
 
 const AddPoll=(props)=>{
     const [text,setText]=useState('')
-    const [user,setUser]=useState(false)
+    const [loading,setLoading]=useState(false)
     const [optiontext,setOptiontext]=useState('')
     const [addoptionPopup,setAddoptionpopup]=useState(false)
     const [options,setOptions]=useState([])
@@ -38,22 +39,65 @@ const AddPoll=(props)=>{
         return ()=> BackHandler.removeEventListener('hardwareBackPress',handleBackPress);  
       },[])
       const addOptionHandler=(text)=>{
-           
-         setOptions([...options,text])
+        const data={title:text,number:options.length+1}
+         setOptions([...options,data])
          setOptiontext("")
          setAddoptionpopup(!addoptionPopup)
       }
     const sendQuery=()=>{
-        if(!text.length){
+        if(!text.trim().length){
             ToastAndroid.showWithGravity(
-                'Please enter your query',
+                'Please enter your Question',
                 ToastAndroid.LONG,
                 ToastAndroid.BOTTOM,
               );
             return 
 
         }
-       
+        if(options.length<2){
+            ToastAndroid.showWithGravity(
+                'Please enter minimum 2 options',
+                ToastAndroid.LONG,
+                ToastAndroid.BOTTOM,
+              );
+            return 
+        }
+        if(!sender.length){
+            ToastAndroid.showWithGravity(
+                'Please select users',
+                ToastAndroid.LONG,
+                ToastAndroid.BOTTOM,
+              );
+            return 
+        }
+    setLoading(true)
+        AsyncStorage.getItem('userId',(err,userId)=>{
+            const uploadData={
+                sender,description:text,options,createdBy:userId
+            }
+            console.log(uploadData)
+
+          CreatePoll(uploadData).then(res=>{
+              console.log(res.data,'aa')
+                if(res.data.error){
+                    ToastAndroid.showWithGravity(
+                        "Try Again",
+                        ToastAndroid.LONG,
+                        ToastAndroid.BOTTOM
+                      );
+                }else{
+                    console.log(res,'piols');
+                    props.navigation.goBack()
+                    ToastAndroid.showWithGravity(
+                        "Polls Create Succesfully",
+                        ToastAndroid.LONG,
+                        ToastAndroid.BOTTOM
+                      );
+                    setLoading(false)
+                } 
+            }) 
+        })
+      
     }
     const delteoptionHandler=(index)=>{
         let optArray=[...options];
@@ -63,7 +107,7 @@ const AddPoll=(props)=>{
 
     return <View style={{flex:1}}>
          <Header heading="Add Poll" icon="arrowleft" onPress={()=>handleBackPress()}/>
-        <Container>  
+       {loading?<Spinner/>:<Container>  
         <Popup visible={addoptionPopup}>
             <Title style={{textAlign:'center'}}>Add Options To Your Poll</Title>
             <Input placeholder="Enter Option" value={optiontext} onChangeText={(value)=>{setOptiontext(value)}}></Input>
@@ -103,7 +147,7 @@ const AddPoll=(props)=>{
                                        {
                                            options.map((op,i)=>{
                                             return <View key={i} style={{marginVertical:6,flexDirection:'row',alignItems:'center',justifyContent:'space-between',width:'100%'}}>
-                                            <Paragraph style={{fontSize:16}}>{i+1}. &nbsp; {op}</Paragraph>
+                                            <Paragraph style={{fontSize:16}}>{op.number}. &nbsp; {op.title}</Paragraph>
                                             <Icon name="delete" color="#000000" size={20} onPress={()=>delteoptionHandler(i)} />
                                             </View>
                                          
@@ -122,12 +166,12 @@ const AddPoll=(props)=>{
                                     
             </View>
                             <View style={{width:'100%',marginTop:20}}>
-                                <Buttons title="SEND MESSAGE" onPress={sendQuery}></Buttons>
+                                <Buttons title="SEND POLL" onPress={sendQuery}></Buttons>
                             </View>
             </View>
         </ScrollView>
-        
-    </Container>
+    
+    </Container>}
     </View>
 }
 

@@ -39,12 +39,13 @@ const Students=(props)=>{
   },[refresh])
     const addHandler=(val)=>{
       
-      const index= props.student.findIndex(value=>val===value)
+      const index= props.student.findIndex(value=>val._id===value.userId)
       if(index>-1){
-       const filterArray=props.student.filter((value,i)=>value!==val)
+       const filterArray=props.student.filter((value,i)=>value.userId!==val._id)
        props.setStudents([...filterArray])
       }else{
-        props.setStudents([...props.student,val])
+        const d={userId:val._id}
+        props.setStudents([...props.student,d])
       }
      }
     const onRefresh=()=>{
@@ -87,7 +88,7 @@ const Students=(props)=>{
             return   <VideoThumbnail views={`${val.branch} DEPT`} title={`${val.name}`} role={val.year} buttontext={'View Details'}  onPress={()=>props.navigation.navigate('Profile',{userId:val._id,approve:true,setRefresh:setRefresh,refresh:refresh})} onClick={()=>{props.navigation.navigate('Profile',{userId:val._id,approve:true,setRefresh:setRefresh,refresh:refresh})}}/>
 
          }else{
-            const index= props.student.findIndex(value=>val._id===value)
+            const index= props.student.findIndex(value=>val._id===value.userId)
             if(index>-1){
               return   <VideoThumbnail views={`${val.branch} DEPT`} title={`${val.name} `}  role={val.year} select={1} onPress={()=>props.navigation.navigate('Profile',{userId:val._id})} onClick={()=>{addHandler(val)}}/>
 
