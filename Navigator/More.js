@@ -11,6 +11,7 @@ import QueriesDetails from '../Screens/QueriesDetails'
 import AddQuerie from '../Screens/AddQuerie'
 import Polls from '../Screens/Polls'
 import AddPoll from '../Screens/AddPoll'
+import AddNotice from '../Screens/AddNotice'
 import PollDetails from '../Screens/PollDetails'
 import Sender from './senderNav'
 
@@ -37,6 +38,8 @@ const More=()=>{
             <Stack.Screen name="AddQuerie" component={AddQuerie}/>
             <Stack.Screen name="Polls" component={Polls}/>
             <Stack.Screen name="AddPoll" component={AddPoll}/>
+            <Stack.Screen name="AddNotice" component={AddNotice}/>
+
             <Stack.Screen name="PollDetails" component={PollDetails}/>
             <Stack.Screen name="Sender" component={Sender}/> 
 
