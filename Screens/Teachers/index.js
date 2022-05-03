@@ -15,7 +15,7 @@ const Teachers=(props)=>{
     const [popup,setPopup]=useState(false)
     const [filter,setFilter]=useState({index:null,value:''})
     const [teach,setTeach]=useState([])
- 
+    const [selectOne,setSelectOne]=useState()
     useEffect(()=>{
         setLoading(true)
         AsyncStorage.getItem('userId',(err,userId)=>{
@@ -29,6 +29,9 @@ const Teachers=(props)=>{
             );
           }else{
             const UserData=res.data.data
+            if(props.route.params.onlyteacher){
+              setSelectOne(props.route.params.teacher||null)
+            }
             console.log(UserData)
             setTeach([...UserData])
             setLoading(false)
@@ -54,6 +57,21 @@ const Teachers=(props)=>{
         props.setTeachers([...props.teacher,d])
      }
     }
+    const selectOneHandler=(val)=>{
+      console.log(val)
+      if(val){
+        props.route.params.setTeacher(val)
+
+        setSelectOne(val)
+        props.navigation.goBack()
+
+      }else{
+        props.route.params.setTeacher({})
+        setSelectOne(null)
+
+
+      }
+    }
     const  handleBackPress = () => {
         if(props.navigation.isFocused()){
         props.navigation.goBack()
@@ -73,7 +91,7 @@ const Teachers=(props)=>{
           {!props.approve? <Row style={{marginVertical:15}}>
                         <Text><Title style={{color:"#0E7167"}}>{teach.length} </Title><Title>Teachers</Title></Text>
                         <View style={{flexDirection:'row',alignItems:'center'}}>
-                        <TouchableOpacity onPress={()=>{  props.setTeachers([...teach,...props.teacher])}}><Para style={{color:"#0C5C8F",fontSize:16,marginRight:20}}>All</Para></TouchableOpacity>
+                       {props.route.params?.onlyteacher?null: <TouchableOpacity onPress={()=>{  props.setTeachers([...teach,...props.teacher])}}><Para style={{color:"#0C5C8F",fontSize:16,marginRight:20}}>All</Para></TouchableOpacity>}
                         {!props.hide?  <Icon name="filter-list" size={22} color="#0C5C8F" onPress={()=>setPopup(!popup)}/>:null}
                         </View>
         </Row>:null}
@@ -86,15 +104,27 @@ const Teachers=(props)=>{
         {
        teach.map((val,i)=>{
          if(props.approve){
-            return   <VideoThumbnail views={`${val.branch} DEPT`} title={`${val.name}`}  role={val.role}buttontext={'View Details'}  onPress={()=>props.navigation.navigate('Profile',{userId:val._id,approve:true,setRefresh:setRefresh,refresh:refresh})} onClick={()=>{props.navigation.navigate('Profile',{userId:val._id,approve:true,setRefresh:setRefresh,refresh:refresh})}}/>
+            return   <VideoThumbnail key={i} views={`${val.branch} DEPT`} title={`${val.name}`}  role={val.role}buttontext={'View Details'}  onPress={()=>props.navigation.navigate('Profile',{userId:val._id,approve:true,setRefresh:setRefresh,refresh:refresh})} onClick={()=>{props.navigation.navigate('Profile',{userId:val._id,approve:true,setRefresh:setRefresh,refresh:refresh})}}/>
 
-         }else{
+         }
+        else if(props.route?.params?.onlyteacher){
+        
+          if(selectOne?._id==val._id){
+            return   <VideoThumbnail key={i} views={`${val.branch} DEPT`} title={`${val.name} `} role={val.role} select={1}   onPress={()=>props.navigation.navigate('Profile',{userId:val._id})} onClick={()=>{selectOneHandler(null)}}/>
+
+          }else{
+            return   <VideoThumbnail key={i} views={`${val.branch} DEPT`} title={`${val.name} `} role={val.role}  buttontext={'Select'} onPress={()=>props.navigation.navigate('Profile',{userId:val._id})} onClick={()=>{selectOneHandler(val)}}/>
+
+          }
+
+         }
+         else{
             const index= props.teacher.findIndex(value=>val._id===value.userId)
             if(index>-1){
-              return   <VideoThumbnail views={`${val.branch} DEPT`} title={`${val.name} `} role={val.role} select={1} onPress={()=>props.navigation.navigate('Profile',{userId:val._id})} onClick={()=>{addHandler(val)}}/>
+              return   <VideoThumbnail key={i} views={`${val.branch} DEPT`} title={`${val.name} `} role={val.role} select={1} onPress={()=>props.navigation.navigate('Profile',{userId:val._id})} onClick={()=>{addHandler(val)}}/>
 
             }else{
-              return   <VideoThumbnail views={`${val.branch} DEPT`} title={`${val.name}`} role={val.role} buttontext={'Select'} onPress={()=>props.navigation.navigate('Profile',{userId:val._id})} onClick={()=>{addHandler(val)}}/>
+              return   <VideoThumbnail key={i} views={`${val.branch} DEPT`} title={`${val.name}`} role={val.role} buttontext={'Select'} onPress={()=>props.navigation.navigate('Profile',{userId:val._id})} onClick={()=>{addHandler(val)}}/>
 
             }
           }

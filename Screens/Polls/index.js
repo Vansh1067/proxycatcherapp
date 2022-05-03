@@ -54,7 +54,7 @@ const Polls =(props)=>{
     <Header heading="Polls" icon="arrowleft" onPress={()=>props.navigation.goBack()}/>
         {loading?<Spinner/>:<Container>
         <View style={styles.addMore}>
-                <Icons name="pluscircle" color="#EB5C5C" size={50} onPress={()=>props.navigation.navigate("AddPoll")} />
+                <Icons name="pluscircle" color="#EB5C5C" size={50} onPress={()=>props.navigation.navigate("AddPoll",{setRefresh,refresh})} />
         </View>
         <View  style={{...styles.list,justifyContent:"flex-start",marginTop:0}} >
           <ScrollView showsVerticalScrollIndicator={false}refreshControl={

@@ -15,6 +15,8 @@ import BottomTabBar from './Navigator/BottomTab';
 import Teachers from './Screens/Teachers'
 import Students from './Screens/Students'
 import Approval from './Navigator/ApprovalRequestNav'
+import Sender from './Navigator/senderNav'
+
 import Profile from './Screens/Profile'
 import Polls from './Screens/Polls'
 
@@ -69,8 +71,8 @@ const App =() => {
           <Stack.Screen name="Profile" component={Profile}/>
           <Stack.Screen name="Students" component={Students}/>
           <Stack.Screen name="Approval" component={Approval}/>
+           
           <Stack.Screen name="Polls" component={Polls}/> 
-
         </Stack.Navigator>
        
   </NavigationContainer>

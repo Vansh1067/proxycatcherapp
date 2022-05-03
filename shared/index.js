@@ -157,9 +157,9 @@ export const Row=({style,children})=>{
 }
 
 export const Dot=({style})=>{
-  return  <View style={{width:6,height:6,borderRadius:50,backgroundColor:"#515762",marginHorizontal:15,...style}}></View>
+  return  <View style={{width:6,height:6,borderRadius:50,backgroundColor:"#515762",marginHorizontal:10,...style}}></View>
 }
-export const AnalyticsCard=({text1,text2,onPress,heading})=>{
+export const AnalyticsCard=({text1,text2,onPress,heading,text3})=>{
   return <TouchableNativeFeedback onPress={onPress}>
     <View style={{...styles.textCard,justifyContent:'space-between'}}>
       <View>
@@ -168,6 +168,9 @@ export const AnalyticsCard=({text1,text2,onPress,heading})=>{
       <Para style={{fontSize:13}}>{text1}</Para>
       {text2?<><Dot/>
       <Para style={{fontSize:13}}>{text2}</Para>
+        </>:null}
+        {text3?<><Dot/>
+      <Para style={{fontSize:13}}>{text3}</Para>
         </>:null}
       </Row>:null}
 

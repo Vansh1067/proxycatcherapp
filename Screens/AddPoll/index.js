@@ -87,6 +87,8 @@ const AddPoll=(props)=>{
                       );
                 }else{
                     console.log(res,'piols');
+                    props.route.params.setRefresh(!props.route.params.refresh)
+
                     props.navigation.goBack()
                     ToastAndroid.showWithGravity(
                         "Polls Create Succesfully",
