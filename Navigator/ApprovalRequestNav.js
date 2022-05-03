@@ -49,7 +49,7 @@ const ApprovalTopTab=(props)=>{
         }}
       >
         {
-            prop=>(<Teachers hide={1}  {...props}/>)
+            prop=>(<Teachers hide={1}  approve={1}  {...props}/>)
         }
         </Tab.Screen>
       <Tab.Screen
@@ -61,7 +61,7 @@ const ApprovalTopTab=(props)=>{
         }}
       >
         {
-          prop=>(<Students hide={1} {...props}/>)
+          prop=>(<Students hide={1} approve={1} {...props}/>)
         }
         </Tab.Screen>
        

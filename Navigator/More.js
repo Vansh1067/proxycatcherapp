@@ -12,7 +12,7 @@ import AddQuerie from '../Screens/AddQuerie'
 import Polls from '../Screens/Polls'
 import AddPoll from '../Screens/AddPoll'
 import PollDetails from '../Screens/PollDetails'
-import Approval from './ApprovalRequestNav'
+import Sender from './senderNav'
 
 
 
@@ -38,7 +38,7 @@ const More=()=>{
             <Stack.Screen name="Polls" component={Polls}/>
             <Stack.Screen name="AddPoll" component={AddPoll}/>
             <Stack.Screen name="PollDetails" component={PollDetails}/>
-           {/*  <Stack.Screen name="Approval" component={Approval}/> */}
+            <Stack.Screen name="Sender" component={Sender}/> 
 
 
          </Stack.Navigator>

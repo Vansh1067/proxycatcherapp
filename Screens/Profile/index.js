@@ -1,15 +1,15 @@
 import React, { useEffect,useState } from 'react'
-import {View,Image, TouchableOpacity,RefreshControl,BackHandler,Text} from 'react-native'
+import {View,Image, TouchableOpacity,RefreshControl,BackHandler,Text,ToastAndroid} from 'react-native'
 import styles from './styles'
 import {Container,Header,Row, Spinner,Input } from '../../shared'
 import Icon  from 'react-native-vector-icons/Entypo'
 import { ScrollView } from 'react-native-gesture-handler'
 import FloatingLabel from 'react-native-floating-labels'
-import { getProfileDetails } from '../../Store/Profile/action'
+import { approvedUser, getProfileDetails } from '../../Store/Profile/action'
 
 const Profile=(props)=>{
     const [data,setData]=useState({})
-    const [user,setUser]=useState(1)
+    const [user,setUser]=useState(0)
   
     const [refreshing,setRefreshing]=useState(false)
     const [refresh,setRefresh]=useState(false)
@@ -20,8 +20,22 @@ const Profile=(props)=>{
         setRefresh(!refresh); 
 
     }
-   
-    useEffect(()=>{
+    const Approvehandler=(val)=>{
+      approvedUser(props.route.params.userId,{approve:val}).then(res=>{
+        if(res.data.error){
+          ToastAndroid.showWithGravity(
+            res.data.error,
+            ToastAndroid.LONG,
+            ToastAndroid.BOTTOM
+          );
+        }else{
+            console.log(res.data)
+            props.navigation.goBack()
+            props.route.params.setRefresh(!props.route.params.refresh)
+        }
+      })
+    }
+    useEffect(()=>{ 
         const userId=props.route.params.userId;
         setLoading(!loading)
         getProfileDetails(userId).then(res=>{
@@ -33,6 +47,8 @@ const Profile=(props)=>{
             );
           }else{
             setData(res.data.data);
+            console.log(res.data.data)
+            setUser(+res.data.data.userType)
             setLoading(false)
             setRefreshing(false)
           }
@@ -131,13 +147,13 @@ const Profile=(props)=>{
     
             
         </View>
-        {props.route?.params?.approve?<View style={styles.buttonView}>
-        <TouchableOpacity onPress={() => props.navigation.navigate('Login') } style={styles.button}>
+        {props.route?.params?.approve&&data.approve==""?<View style={styles.buttonView}>
+        <TouchableOpacity onPress={() => Approvehandler(true) } style={styles.button}>
            <Text style={styles.buttonText}>Approval</Text>
         </TouchableOpacity>
       </View>:null}
-      {props.route?.params?.approve?<View style={styles.buttonView}>
-        <TouchableOpacity onPress={() => props.navigation.navigate('Login') } style={styles.button}>
+      {props.route?.params?.approve&&data.approve==""?<View style={styles.buttonView}>
+        <TouchableOpacity onPress={() => Approvehandler(false) } style={styles.button}>
            <Text style={styles.buttonText}>Decline</Text>
         </TouchableOpacity>
       </View>:null}

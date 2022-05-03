@@ -1,11 +1,11 @@
 import axios from 'axios'
 import { AsyncStorage ,ToastAndroid} from 'react-native'
 import {CommonActions} from '@react-navigation/native'
+//process.env.PRODUCTION?'https://proxycatcher.herokuapp.com/':'http://192.168.43.129:3000/'
 export const BASE_URL='http://192.168.43.129:3000/'
 import {navigationRef} from './App'
 const Instances=axios.create({
     baseURL:BASE_URL
-
 })
 const resetAction = CommonActions.reset({
     index: 0,
@@ -15,11 +15,7 @@ const resetAction = CommonActions.reset({
     ],
   })
  Instances.interceptors.request.use(async (config)=>{
- /*  await  AsyncStorage.getItem('accessToken',(err,result)=>{
-        console.log(result,'accessToken')
-    config.params = {...config.params, access_token: result}
-    
-   }) */
+
    console.log(config.url,'url',config.params)
 
    return config

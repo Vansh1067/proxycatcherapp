@@ -178,45 +178,38 @@ export const AnalyticsCard=({text1,text2,onPress,heading})=>{
   </TouchableNativeFeedback>
 }
 
-export const VideoThumbnail=({views,onClick,sold,title,image,link})=>{
-  console.log(image,'image')
-  const shareMessage=()=>{
-    Share.share({
-        message: `Watch my latest video on ${title}: \n ${link}`,
-        url: link,
-        title: title
-      }, {
-        dialogTitle: 'Watch my latest video',
-        tintColor: '#F44336'
-      });
-}
-  return <View style={{marginVertical:10,flexDirection:'row'}}  >
-           <TouchableWithoutFeedback  >
+export const VideoThumbnail=({views,onClick,buttontext,title,image,onPress,select,role})=>{
+
+  
+  return <View style={{marginVertical:10,flexDirection:'row',alignItems:'center'}}  >
+         
+
+           <TouchableWithoutFeedback onPress={onPress} >
+
             {image? <Image
-               style={{width: 120, height: 80,borderRadius:5,marginRight:10}}
+               style={{width: 80, height: 80,borderRadius:5,marginHorizontal:5}}
                resizeMode={'cover'}
                source={{uri:image}}
              />:<Image
-             style={{width: 120, height: 80,borderRadius:5,marginRight:10}}
+             style={{width: 80, height: 80,borderRadius:5,marginHorizontal:5}}
              resizeMode={'cover'}
              source={require('../Images/download.jpeg')}
            />}
              </TouchableWithoutFeedback>
-             <View style={{paddingVertical:10,flex:1}}>
-               <Paragraph style={{flex:1,flexWrap:'wrap',fontSize:16}}>{title}</Paragraph>
-            {/*    {!views?<Row style={{justifyContent:'flex-start'}}>
-                <Para style={{fontSize:13}}>{sold} Sold</Para>
-                <Dot/>
-                <Para style={{fontSize:13}}>{earnings}</Para>
+             <View style={{paddingVertical:10,flex:1,marginLeft:5}}>
+               <Paragraph style={{flex:1,flexWrap:'wrap',fontSize:14,marginBottom:5}}>{title}</Paragraph>
+               <Paragraph style={{flex:1,flexWrap:'wrap',fontSize:14,marginBottom:5}}>({role})</Paragraph>
 
-              </Row>: */}
-              <Row>
+           
+              <Row style={{marginVertical:6}}>
                 <View style={{flexDirection:'row',alignItems:'center'}}>
                  
-                  <Para style={{marginLeft:10}}>{views}</Para>
+                  <Para style={{marginLeft:0}}>{views}</Para>
                 </View>
-                <TouchableOpacity onPress={()=>onClick()}><View>
-                  <Para style={{color:"#0C5C8F",fontWeight:'600'}} >View Details </Para>
+                <TouchableOpacity onPress={()=>{onClick();}}><View>
+                 
+
+                  <Para style={{color:"#0C5C8F",fontWeight:'600'}} >{select?<FontAwesome name="check" size={16} color="#4caf50"/>:buttontext} </Para>
                   </View></TouchableOpacity>
               </Row>
             

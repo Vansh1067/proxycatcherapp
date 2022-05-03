@@ -1,7 +1,7 @@
 import React, { useState,useEffect } from 'react'
 import {View,BackHandler,TextInput, AsyncStorage,ToastAndroid} from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
-import { Container, Paragraph ,Header, Row, Buttons,Title} from '../../shared'
+import { Container, Paragraph ,Header, Row, Buttons,Title, Input,Popup} from '../../shared'
 import {RadioGroup, RadioButton} from 'react-native-flexi-radio-button'
 import styles from './styles'
 import Icon  from 'react-native-vector-icons/AntDesign'
@@ -10,7 +10,10 @@ import Icon  from 'react-native-vector-icons/AntDesign'
 const AddPoll=(props)=>{
     const [text,setText]=useState('')
     const [user,setUser]=useState(false)
-
+    const [optiontext,setOptiontext]=useState('')
+    const [addoptionPopup,setAddoptionpopup]=useState(false)
+    const [options,setOptions]=useState([])
+    const [sender,setSender]=useState([])
     const changeTextHandler=(value)=>{
         if(value.length<1500){
                 setText(value)
@@ -34,6 +37,12 @@ const AddPoll=(props)=>{
         BackHandler.addEventListener('hardwareBackPress', handleBackPress);  
         return ()=> BackHandler.removeEventListener('hardwareBackPress',handleBackPress);  
       },[])
+      const addOptionHandler=(text)=>{
+           
+         setOptions([...options,text])
+         setOptiontext("")
+         setAddoptionpopup(!addoptionPopup)
+      }
     const sendQuery=()=>{
         if(!text.length){
             ToastAndroid.showWithGravity(
@@ -46,11 +55,24 @@ const AddPoll=(props)=>{
         }
        
     }
+    const delteoptionHandler=(index)=>{
+        let optArray=[...options];
+        optArray = optArray.filter((item,i) => i !== index)
+        setOptions([...optArray])
+    }
 
     return <View style={{flex:1}}>
-         <Header heading="Query Or Suggestion" icon="arrowleft" onPress={()=>handleBackPress()}/>
+         <Header heading="Add Poll" icon="arrowleft" onPress={()=>handleBackPress()}/>
         <Container>  
+        <Popup visible={addoptionPopup}>
+            <Title style={{textAlign:'center'}}>Add Options To Your Poll</Title>
+            <Input placeholder="Enter Option" value={optiontext} onChangeText={(value)=>{setOptiontext(value)}}></Input>
+            <View style={{flexDirection:'row',justifyContent:"center",marginTop:10}}>
+                <Buttons title="Add" style={{width:140}}  onPress={()=>{{addOptionHandler(optiontext)}}}/>
+            </View>
+        </Popup>
         <ScrollView  showsVerticalScrollIndicator={false}>
+
          <View style={{marginTop:30,flex:1}}>
             <Paragraph>Write your question here?</Paragraph>
             <View style={{marginTop:30,flex:1}}>
@@ -74,52 +96,35 @@ const AddPoll=(props)=>{
             </View>
             <View style={{flexDirection:'row',flex:1,justifyContent:'space-between',alignItems:'center',marginVertical:10}}>
                 <Paragraph>Add Options</Paragraph>
-                <Icon name="pluscircle" color="#EB5C5C" size={30} onPress={()=>props.navigation.navigate("AddDay")} />
+                <Icon name="pluscircle" color="#EB5C5C" size={30} onPress={()=>{setAddoptionpopup(!addoptionPopup)}} />
         </View>
-        <View style={{marginBottom:20}}>
-        <RadioGroup
-                                    onSelect={(index,value)=>{setUser(index)}} 
-                                    color="#0C5C8F"
-                                    selectedIndex={user}>
-                                        
-                                        <RadioButton value={true} style={{display:'flex',flexDirection:'row',width:150}} left={1} >
-                                            <Paragraph>Yes</Paragraph>
-                                        </RadioButton>
-                                        <RadioButton value={false} style={{display:'flex',flexDirection:'row',flex:150}} left={1} >
-                                            <Paragraph>No</Paragraph>
-                                        </RadioButton>
-                                        <RadioButton value={false} style={{display:'flex',flexDirection:'row',flex:150}} left={1} >
-                                            <Paragraph>Not decided</Paragraph>
-                                        </RadioButton>
-                                    </RadioGroup>
+        <View style={{marginBottom:20,minHeight:50}}>
+     
+                                       {
+                                           options.map((op,i)=>{
+                                            return <View key={i} style={{marginVertical:6,flexDirection:'row',alignItems:'center',justifyContent:'space-between',width:'100%'}}>
+                                            <Paragraph style={{fontSize:16}}>{i+1}. &nbsp; {op}</Paragraph>
+                                            <Icon name="delete" color="#000000" size={20} onPress={()=>delteoptionHandler(i)} />
+                                            </View>
+                                         
+                                           })
+                                       }
 
         </View>
             <View style={{marginVertical:10,width:'100%'}}>
                                 <Title style={{marginLeft:10}}>To whom you want to send poll ?</Title>
                                 
-                                    <RadioGroup
-                                    onSelect={(index,value)=>{setUser(index)}} 
-                                    color="#0C5C8F"
-                                    style={{display:'flex',flexDirection:'row',alignItems:'center',marginTop:5,justifyContent:'space-between'}}
-                                    selectedIndex={user}>
-                                         <RadioButton value={false} style={{display:'flex',flexDirection:'row'}} left={1} >
-                                            <Paragraph>All</Paragraph>
-                                        </RadioButton>
-                                        <RadioButton value={true} style={{display:'flex',flexDirection:'row'}} left={1} >
-                                            <Paragraph>Student</Paragraph>
-                                        </RadioButton>
-                                        <RadioButton value={false} style={{display:'flex',flexDirection:'row'}} left={1} >
-                                            <Paragraph>Teacher</Paragraph>
-                                        </RadioButton>
-                                       
-                                    </RadioGroup>
+                                <View style={{width:'100%',marginTop:20}}>
+                                <Buttons style={{backgroundColor:'#FFFFFF',borderColor:"#292F3B",borderWidth:1}}  color="#292F3B" title={sender.length>0?sender.length+" user selected":"SELECT USER"} onPress={()=>props.navigation.navigate('Sender',{setSender:setSender,sender:sender})}></Buttons>
+                                </View>
+                                   
                                   
                                     
-                            </View>
+            </View>
                             <View style={{width:'100%',marginTop:20}}>
                                 <Buttons title="SEND MESSAGE" onPress={sendQuery}></Buttons>
                             </View>
-                </View>
+            </View>
         </ScrollView>
         
     </Container>

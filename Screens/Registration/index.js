@@ -1,10 +1,13 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState,useContext } from 'react'
 import {Text,View,ToastAndroid,ScrollView,BackHandler,Alert, Linking,Image,AsyncStorage,TouchableWithoutFeedback} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
-import {Asterik,Input,Title,Paragraph,Header,Buttons,Container,Row,Para} from '../../shared'
+import {Asterik,Input,Title,Paragraph,Header,Buttons,Container,Row,Para, Spinner} from '../../shared'
 import  { Menu,MenuItem, MenuDivider } from 'react-native-material-menu';
 import Icon  from 'react-native-vector-icons/AntDesign'
 import { registration } from '../../Store/Auth/action';
+import { getHods } from '../../Store/Profile/action';
+import {AppStateContext} from '../../context'
+
 
 const Registration=(props)=>{
     const [year,setYear]=useState('');
@@ -15,26 +18,52 @@ const Registration=(props)=>{
     const [showBranch,setShowbranch]=useState(false)
     const [role,setRole]=useState('');
     const [showRole,setShowRole]=useState(false)
+    const [hod,sethod]=useState();
+    const [showHod,setShowHod]=useState(false)
 
     const _yearMenu=React.createRef()
+    const _HODMenu=React.createRef()
     const _semesterMenu=React.createRef()
     const _branchMenu=React.createRef()
     const _roleMenu=React.createRef()
 
-    const [user,setUser]=useState(props.user||1)
+    //const [user,setUser]=useState(props.user||1)
+    const {user,setUser}=useContext(AppStateContext)
+
     const [name,setName]=useState("")
     const [email,setEmail]=useState("")
     const [userId,setUserId]=useState("")
     const [phone,setPhone]=useState("")
     const [password,setPassword]=useState("")
     const [confirmPassword,setConfirmPassword]=useState("")
+    const [HODs,setHODs]=useState([])
+    const [loading,setLoading]=useState(false)
 
-
-
+    useEffect(()=>{ 
+    
+     // setLoading(!loading)
+       // setUser(props.user)
+        getHods().then(res=>{
+          if(res.data.error){
+            ToastAndroid.showWithGravity(
+              res.data.error,
+              ToastAndroid.LONG,
+              ToastAndroid.BOTTOM
+            );
+          }else{
+            const DATA=res.data
+            console.log(res.data.HODs)
+            setHODs(DATA.HODs)
+           // setLoading(!loading)
+      
+        
+          }
+        })
+    },[]) 
 
 
     const RegisterHandler=()=>{
-       
+
             const namePattern=new RegExp(/^[a-zA-Z ]+$/)
             if(namePattern.test(name)){
               const emailPattern=new RegExp(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/)
@@ -64,6 +93,14 @@ const Registration=(props)=>{
                     );
                     return 
                 }
+                if(!hod&&user!=3){
+                  ToastAndroid.showWithGravity(
+                    'Please Select your HOD!',
+                    ToastAndroid.LONG,
+                    ToastAndroid.BOTTOM
+                  );
+                  return 
+              }
                 const idPattern=new RegExp(/^\d{6}$/)
                 if(idPattern.test(userId)){
                 const phonePattern=new RegExp(/^\d{10}$/)
@@ -96,7 +133,10 @@ const Registration=(props)=>{
                     return 
                   }else{
                     const uploadData={
-                      name,email,branch,semester,year,role,userId,phone,password,confirmPassword,userType:+user
+                      name,email,branch,semester,year,role,userId,phone,password,confirmPassword,userType:+user,
+                    }
+                    if(user!=3){
+                      uploadData.hodId=hod._id
                     }
                     registration(uploadData)
                     .then(response=>{
@@ -115,6 +155,8 @@ const Registration=(props)=>{
                         );
                         const DATA=response.data.data
                         AsyncStorage.setItem('userId',DATA._id)
+
+                        //setUser(props.user)
                         props.navigation.navigate('VerifyUser',{verifyRequest:'pending'});
                         console.log(DATA.userId)
                         
@@ -177,7 +219,7 @@ const Registration=(props)=>{
         <View style={{flex:1,backgroundColor: '#FAFAFA'}}>
           
    
-               <ScrollView showsVerticalScrollIndicator={false}>
+            {loading?<Spinner/>:   <ScrollView showsVerticalScrollIndicator={false}>
                         
           <Row style={{ marginVertical: 30, justifyContent: 'center' }}>
             <View style={{ position: 'relative' }}>
@@ -287,7 +329,28 @@ const Registration=(props)=>{
                                      </ScrollView>
                                    </Menu>
             </View>}
-        
+            {user!=3&& <View style={{marginVertical:10}}>
+                                   <Para>Select your HOD <Asterik/></Para>
+                                    <Menu 
+                                   ref={_HODMenu}
+                                   style={{width:'90%',marginTop:42}}
+                                   anchor={<TouchableWithoutFeedback 
+                                    onPress={()=>{setShowHod(!showHod);_HODMenu.current.show()}}>
+                                    <View style={{borderBottomWidth:1,borderBottomColor:'#959595',display:'flex',flexDirection:'row',justifyContent:'space-between',paddingVertical:10}}>
+                                    <Paragraph style={{color:hod?"#292F3B":showHod?"#0C5C8F":'#959595'}}>{hod?(`${hod.name} (${hod.branch})`):'Select your HOD '}</Paragraph>
+                                    <Icon name="caretdown" size={12} color="#959595"/>
+                                    </View>
+                                    </TouchableWithoutFeedback>}
+                                   >
+                                     {
+                                       HODs.map((data,i)=>{
+                                        return   <MenuItem key={i} onPress={()=>{sethod(data);setShowHod(!showHod);_HODMenu.current.hide()}}><Paragraph style={{marginVertical:10}} >{data.name} ({data.branch})</Paragraph></MenuItem>
+                                
+                                       })
+                                     }
+                                   
+                                   </Menu>
+            </View>}
             {user==1&&<Input required={1} label="College ID" placeholder="College ID" value={userId}  onChangeText={(value)=>{setUserId(value)}}/>}
           {user==2&&<Input required={1} label="Teacher ID" placeholder="Teacher ID" value={userId}  onChangeText={(value)=>{setUserId(value)}}/>}
           {user==3&&<Input required={1} label="HOD ID" placeholder="HOD ID" value={userId}   onChangeText={(value)=>{setUserId(value)}}/>}
@@ -298,7 +361,7 @@ const Registration=(props)=>{
           <Buttons title="REGISTER" onPress={()=>RegisterHandler()} style={{marginVertical:50}} />
 
           </View>
-               </ScrollView>
+               </ScrollView>}
         
         </View>
     )

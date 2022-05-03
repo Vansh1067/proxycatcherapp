@@ -1,14 +1,17 @@
-import React,{useState} from 'react'
-import {View,Text} from 'react-native'
+import React,{useState,useContext} from 'react'
+import {View,AsyncStorage} from 'react-native'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { Container ,Header,Popup,Title,Buttons,Para} from '../shared'
 import { CommonActions } from '@react-navigation/native';
 
 import Icon  from 'react-native-vector-icons/MaterialIcons'
 import Registration from '../Screens/Registration'
+import {AppStateContext} from '../context'
+
 const Tab = createMaterialTopTabNavigator();
 const RegistrationTopTab=(props)=>{
     const [popup,setPopup]=useState(false)
+    const {user,setUser}=useContext(AppStateContext)
     const resetAction = CommonActions.reset({
         index: 0,
         routes: [
@@ -18,8 +21,13 @@ const RegistrationTopTab=(props)=>{
       })
     const logout=()=>{
         props.navigation.dispatch(resetAction)
+        AsyncStorage.clear()
         
       }
+    const userHandler=(val)=>{
+     // console.warn(val,'nav')
+      setUser(val)
+    }
     return <View style={{flex:1}} >
         <Header heading="New Registration">
              <Icon name={'close'} size={22} color="#292F3B" style={{marginRight:10}} onPress={()=>setPopup(!popup)}/>
@@ -57,12 +65,13 @@ const RegistrationTopTab=(props)=>{
         name="Student"
        
         options={{ tabBarLabel: 'Student' }}
+
         listeners={{
-         /*  focus:()=>setScreen('Pending') */
+          focus:()=>userHandler(1)
         }}
       >
         {
-          prop=>(<Registration user={1} {...props}/>)
+          prop=>(<Registration  user={user} {...props}/>)
         }
         </Tab.Screen>
         <Tab.Screen
@@ -70,23 +79,25 @@ const RegistrationTopTab=(props)=>{
        
         options={{ tabBarLabel: 'Teacher' }}
         listeners={{
-          /* focus:()=>setScreen('Checked') */
+          focus:()=>userHandler(2)
         }}
       >
         {
-            prop=>(<Registration user={2}  {...props}/>)
+            prop=>(<Registration user={user}  {...props}/>)
         }
         </Tab.Screen>
         <Tab.Screen
         name="HOD"
        
         options={{ tabBarLabel:'HOD' }}
+
         listeners={{
-          /* focus:()=>setScreen('Checked') */
+          focus:()=>userHandler(3)
+
         }}
       >
         {
-            prop=>(<Registration user={3}  {...props}/>)
+            prop=>(<Registration user={user}  {...props}/>)
         }
         </Tab.Screen>
     </Tab.Navigator>
