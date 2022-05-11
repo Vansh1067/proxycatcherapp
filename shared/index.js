@@ -159,11 +159,11 @@ export const Row=({style,children})=>{
 export const Dot=({style})=>{
   return  <View style={{width:6,height:6,borderRadius:50,backgroundColor:"#515762",marginHorizontal:10,...style}}></View>
 }
-export const AnalyticsCard=({text1,text2,onPress,heading,text3})=>{
+export const AnalyticsCard=({text1,text2,onPress,heading,text3,hide})=>{
   return <TouchableNativeFeedback onPress={onPress}>
     <View style={{...styles.textCard,justifyContent:'space-between'}}>
       <View>
-<Paragraph style={{color:"#424242",marginVertical:3,fontSize:16}}>{heading}</Paragraph>
+<Paragraph style={{color:"#424242",marginBottom:10,fontSize:16}}>{heading}</Paragraph>
     {text1||text2?<Row style={{justifyContent:'flex-start'}}>
       <Para style={{fontSize:13}}>{text1}</Para>
       {text2?<><Dot/>
@@ -175,7 +175,7 @@ export const AnalyticsCard=({text1,text2,onPress,heading,text3})=>{
       </Row>:null}
 
       </View>
-      <FontAwesome name="angle-right" size={20} color="#424242"/>
+      {!hide&&<FontAwesome name="angle-right" size={20} color="#424242"/>}
 
   </View>
   </TouchableNativeFeedback>

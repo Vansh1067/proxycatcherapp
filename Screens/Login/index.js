@@ -52,6 +52,8 @@ const Login =(props)=>{
             const data=res.data
            console.warn(data)
             AsyncStorage.setItem('userId',data.userId)
+            AsyncStorage.setItem('branch',data.branch)
+
             setUser(data.userType)
             if(data.approve=="true"&&data.emailVerify){
               props.navigation.navigate('BottomTabBar',{verifyRequest:'approved'});

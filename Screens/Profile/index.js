@@ -148,12 +148,12 @@ const Profile=(props)=>{
             
         </View>
         {props.route?.params?.approve&&data.approve==""?<View style={styles.buttonView}>
-        <TouchableOpacity onPress={() => Approvehandler(true) } style={styles.button}>
+        <TouchableOpacity onPress={() => Approvehandler("true") } style={styles.button}>
            <Text style={styles.buttonText}>Approval</Text>
         </TouchableOpacity>
       </View>:null}
       {props.route?.params?.approve&&data.approve==""?<View style={styles.buttonView}>
-        <TouchableOpacity onPress={() => Approvehandler(false) } style={styles.button}>
+        <TouchableOpacity onPress={() => Approvehandler("false") } style={styles.button}>
            <Text style={styles.buttonText}>Decline</Text>
         </TouchableOpacity>
       </View>:null}

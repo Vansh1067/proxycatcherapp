@@ -155,6 +155,9 @@ const Registration=(props)=>{
                         );
                         const DATA=response.data.data
                         AsyncStorage.setItem('userId',DATA._id)
+                        //AsyncStorage.setItem('userDetails',DATA)
+                        AsyncStorage.setItem('branch',DATA.branch)
+
 
                         //setUser(props.user)
                         props.navigation.navigate('VerifyUser',{verifyRequest:'pending'});

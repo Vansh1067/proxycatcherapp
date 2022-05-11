@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState,useEffect } from 'react'
 import {Text,View,ScrollView,BackHandler,Alert,ToastAndroid, RefreshControl,Image,TouchableOpacity,AsyncStorage} from 'react-native';
 import Icon  from 'react-native-vector-icons/MaterialIcons'
 import Icons  from 'react-native-vector-icons/AntDesign'
@@ -6,6 +6,7 @@ import Icons  from 'react-native-vector-icons/AntDesign'
 import {Asterik,Row,Title,Paragraph,Header,Para,Container,AnalyticsCard, Spinner,FilterPopup} from '../../shared'
 import styles from './styles'
 import { getAllClasses } from '../../Store/Classes/action';
+
 const TimeTable=(props)=>{
     const [showSearch,setShowSearch]=useState(false)
 
@@ -21,7 +22,7 @@ const TimeTable=(props)=>{
         setRefreshing(true)
 
     }
-    useState(()=>{
+    useEffect(()=>{
             setLoading(true)
             AsyncStorage.getItem('userId',(err,userId)=>{
                 getAllClasses(userId).then(res=>{
@@ -66,7 +67,7 @@ const TimeTable=(props)=>{
               {
                   classes.map((cls,i)=>{
                       console.log(cls)
-                    return     <AnalyticsCard key={i}  heading={`${cls.name} - ${cls.code}`} text1={cls.year} text2={cls.semester} text3={cls.teacherId.name}/>
+                    return     <AnalyticsCard hide={1} key={i}  heading={`${cls.name} - ${cls.code}`} text1={cls.year} text2={cls.semester} text3={cls.teacherId.name}/>
    
                   })
               }

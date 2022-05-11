@@ -2,7 +2,7 @@ import React, { useState,useEffect } from 'react'
 import {Text,View,ScrollView,BackHandler,ToastAndroid, RefreshControl,Image,TouchableOpacity,AsyncStorage} from 'react-native';
 import Icon  from 'react-native-vector-icons/MaterialIcons'
 import {Asterik,Row,Title,Paragraph,Header,Para,Container,VideoThumbnail, Spinner,FilterPopup} from '../../shared'
-import { getApprovalrequest } from '../../Store/Profile/action';
+import { getApprovalrequest,getApprovalUser } from '../../Store/Profile/action';
 import styles from './styles'
 const Students=(props)=>{
     const [showSearch,setShowSearch]=useState(false)
@@ -17,9 +17,29 @@ const Students=(props)=>{
     const [teach,setTeach]=useState([])
     useEffect(()=>{
       setLoading(true)
-      AsyncStorage.getItem('userId',(err,userId)=>{
-        getApprovalrequest(1,userId).then(res=>{
-
+      if(props.approve){
+        AsyncStorage.getItem('userId',(err,userId)=>{
+          getApprovalrequest(1,userId).then(res=>{
+  
+            if(res.data.error){
+              ToastAndroid.showWithGravity(
+                res.data.error,
+                ToastAndroid.LONG,
+                ToastAndroid.BOTTOM
+              );
+            }else{
+              const UserData=res.data.data
+              console.log(UserData)
+              setTeach([...UserData])
+              setLoading(false)
+              setRefreshing(false)
+            }
+          })
+        })
+      }else{
+        AsyncStorage.getItem('branch',(err,branch)=>{
+          console.log(branch)
+        getApprovalUser(1,branch).then(res=>{
           if(res.data.error){
             ToastAndroid.showWithGravity(
               res.data.error,
@@ -28,13 +48,18 @@ const Students=(props)=>{
             );
           }else{
             const UserData=res.data.data
-            console.log(UserData)
+            if(props.route.params.onlyteacher){
+              setSelectOne(props.route.params.teacher||null)
+            }
+            console.log(UserData,'pp')
             setTeach([...UserData])
             setLoading(false)
             setRefreshing(false)
           }
         })
       })
+      }
+   
     
   },[refresh])
     const addHandler=(val)=>{

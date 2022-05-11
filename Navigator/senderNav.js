@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from 'react'
-import {View,TouchableOpacity} from 'react-native'
+import {View,TouchableOpacity,BackHandler,ToastAndroid} from 'react-native'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { Container ,Header, Para, Paragraph} from '../shared'
 import Teachers  from '../Screens/Teachers';
@@ -19,6 +19,27 @@ const SenderTopTab=(props)=>{
 
         }
     },[props.route.params.sender])
+    
+    const  handleBackPress = () => {
+      if(props.navigation.isFocused()){
+         // props.navigation.goBack()
+         ToastAndroid.showWithGravity(
+          'To go back click on Done',
+          ToastAndroid.LONG,
+          ToastAndroid.BOTTOM,
+        );
+          return true;
+          
+        
+          }else{
+            return false
+          }
+     
+    }
+    useEffect(()=>{
+      BackHandler.addEventListener('hardwareBackPress', handleBackPress);  
+      return ()=> BackHandler.removeEventListener('hardwareBackPress',handleBackPress);  
+    },[])
     const doneHandler=()=>{
        props.route.params.setSender([...user])
        props.navigation.goBack()
