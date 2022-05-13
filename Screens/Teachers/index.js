@@ -139,6 +139,9 @@ const Teachers=(props)=>{
 
           }
 
+         }else if(props.route?.params?.onlyShow){
+          return   <VideoThumbnail key={i} views={`${val.branch} DEPT`} title={`${val.name}`}  role={val.role}buttontext={'View Details'}  onPress={()=>props.navigation.navigate('Profile',{userId:val._id,approve:true,setRefresh:setRefresh,refresh:refresh})} onClick={()=>{props.navigation.navigate('Profile',{userId:val._id,approve:true,setRefresh:setRefresh,refresh:refresh})}}/>
+
          }
          else{
             const index= props.teacher.findIndex(value=>val._id===value.userId)

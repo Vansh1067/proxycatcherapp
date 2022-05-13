@@ -11,11 +11,17 @@ import Graph from '../../Component/LabelGraph'
 const ClassDetails=(props)=>{
  
   const [date,setDate]=useState(new Date())
+  const [classDetails,setClassDetails]=useState(null)
   const mlist = [ "Jan", "Febr", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec" ];
   const [refreshing,setRefreshing]=useState(false)
     const [refresh,setRefresh]=useState(false)
     const [loading,setLoading]=useState(false)
-
+    useEffect(()=>{
+          setLoading(true)
+          setClassDetails(props.route.params.data)
+          setLoading(false)
+          setRefreshing(false)
+    },[refresh])
     const onRefresh=()=>{
         setRefreshing(true);
         setRefresh(!refresh);
@@ -26,7 +32,17 @@ const ClassDetails=(props)=>{
       return ()=> BackHandler.removeEventListener('hardwareBackPress',handleBackPress);  
     },[])
    
-    
+    const formatAMPM = (date) => {
+      // console.warn(date)
+       let hours = date.getHours();
+       let minutes = date.getMinutes();
+       let ampm = hours >= 12 ? 'pm' : 'am';
+       hours = hours % 12;
+       hours = hours ? hours : 12;
+       minutes = minutes.toString().padStart(2, '0');
+       let strTime = hours + ':'+minutes +' '+ ampm;
+       return strTime;
+   }
   
     const  handleBackPress = () => {
       if(props.navigation.isFocused()){
@@ -47,7 +63,7 @@ const ClassDetails=(props)=>{
     
      /*  const color = percent >= 0 && percent <= 25 ? '#FFCDD2' : percent >= 26 && percent <= 50 ? '#FFE0B2' : '#C5E1A5' */
     return <View style={{flex:1}}>
-          <Header heading={'Economics'} icon="arrowleft" onPress={()=>handleBackPress()}/>
+          <Header heading={classDetails?.name} icon="arrowleft" onPress={()=>handleBackPress()}/>
 
        {!loading? <Container>
           
@@ -61,27 +77,27 @@ const ClassDetails=(props)=>{
                 <View style={styles.iconView}>
                   <MaterialIcon name="assignment" size={22} style={{color:'#616161'}}/>
                 </View>
-                  <Text style={{color:'#424242',fontSize:16}}>Economics PCS-125</Text>
+                  <Text style={{color:'#424242',fontSize:16}}>{classDetails?.name} {classDetails?.code}</Text>
               </View>
               <View style={styles.menuSection}> 
                 <View style={styles.iconView}>
                   <Icon name="question" size={22} style={{color:'#616161'}}/>
                 </View>
-                <Text style={{color:'#424242',fontSize:16}}>4th Year</Text>
+                <Text style={{color:'#424242',fontSize:16}}>{classDetails?.year}</Text>
               </View>
               <View style={styles.menuSection}> 
                 <View style={styles.iconView}>
                   <MaterialIcon name="local-library" size={22} style={{color:'#616161'}}/>
                 </View>
-                <Text style={{color:'#424242',fontSize:16}}>7th Sem</Text>
+                <Text style={{color:'#424242',fontSize:16}}>{classDetails?.semester}</Text>
               </View>
-              <View style={styles.menuSection}> 
+           {/*    <View style={styles.menuSection}> 
                 <View style={styles.iconView}>
                   <Icon name="clock-o" size={22} style={{color:'#616161'}}/>
                 </View>
-                <Text style={{color:'#424242',fontSize:16}}>2:00 PM</Text>
+                <Text style={{color:'#424242',fontSize:16}}>{formatAMPM(new Date(classDetails?.timeFrom))}</Text>
 
-              </View>
+              </View> */}
             </View>
              <Title style={{marginVertical:5,color:'#0C5C8F'}}>{"Attendance"}</Title>
              <Para>25 Total Classes</Para>
