@@ -38,6 +38,7 @@ const Dashboard=(props)=>{
               );
             }else{
               const DATA=res.data.data
+              console.warn(DATA)
               setTotalStudents(DATA.student)
               setTotalTeachers(DATA.teacher)
               setApproval(DATA.approve)

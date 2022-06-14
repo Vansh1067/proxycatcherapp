@@ -72,7 +72,7 @@ const AddClass=(props)=>{
                 name,code:classCode,branch,year,semester,teacherId:teacher._id,hodId:userId,students:[]
               }
               CreateClasses(uploadData).then(res=>{
-                console.log(res,'classes')
+                console.log(res.data,'classes')
                 if(res.data.error){
                   ToastAndroid.showWithGravity(
                       "Try Again",

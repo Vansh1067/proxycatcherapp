@@ -1,6 +1,6 @@
 import React, { useState,useEffect } from 'react'
 import {Text,View,ScrollView,BackHandler,Alert, RefreshControl,ToastAndroid,AsyncStorage} from 'react-native';
-import {Header,PollCard,Container, Spinner} from '../../shared'
+import {Header,PollCard,Container, Spinner,Paragraph} from '../../shared'
 import Icons  from 'react-native-vector-icons/AntDesign'
 
 import styles from './styles'
@@ -61,11 +61,11 @@ const Polls =(props)=>{
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>
               {
-                polls.map((p,i)=>{
+                polls.length>0?polls.map((p,i)=>{
                   const per=(p.responser.length/p.sender.length)*100
                   return <PollCard key={i} title={p.description.slice(0,25)} percentage={per} createdAt={p.createdAt} onPress={()=>props.navigation.navigate("PollDetails",{pollId:p._id})} />
         
-                })
+                }):<View style={{flex:1,alignItems:"center",marginVertical:100}}><Paragraph style={{color:"#00000050"}}>No Polls Found</Paragraph></View>
               }
           </ScrollView>
         </View>

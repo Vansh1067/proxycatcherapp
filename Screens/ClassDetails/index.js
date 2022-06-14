@@ -18,6 +18,7 @@ const ClassDetails=(props)=>{
     const [loading,setLoading]=useState(false)
     useEffect(()=>{
           setLoading(true)
+          console.log(props.route.params.data,'kk')
           setClassDetails(props.route.params.data)
           setLoading(false)
           setRefreshing(false)
@@ -81,23 +82,23 @@ const ClassDetails=(props)=>{
               </View>
               <View style={styles.menuSection}> 
                 <View style={styles.iconView}>
-                  <Icon name="question" size={22} style={{color:'#616161'}}/>
+                  <Icon name="clock-o" size={22} style={{color:'#616161'}}/>
                 </View>
                 <Text style={{color:'#424242',fontSize:16}}>{classDetails?.year}</Text>
               </View>
               <View style={styles.menuSection}> 
                 <View style={styles.iconView}>
-                  <MaterialIcon name="local-library" size={22} style={{color:'#616161'}}/>
+                  <Icon name="clock-o"size={22} style={{color:'#616161'}}/>
                 </View>
                 <Text style={{color:'#424242',fontSize:16}}>{classDetails?.semester}</Text>
               </View>
-           {/*    <View style={styles.menuSection}> 
+             <View style={styles.menuSection}> 
                 <View style={styles.iconView}>
-                  <Icon name="clock-o" size={22} style={{color:'#616161'}}/>
+                  <MaterialIcon name="local-library" size={22} style={{color:'#616161'}}/>
                 </View>
-                <Text style={{color:'#424242',fontSize:16}}>{formatAMPM(new Date(classDetails?.timeFrom))}</Text>
+                <Text style={{color:'#424242',fontSize:16}}>{classDetails?.teacherId?.name}</Text>
 
-              </View> */}
+              </View> 
             </View>
              <Title style={{marginVertical:5,color:'#0C5C8F'}}>{"Attendance"}</Title>
              <Para>25 Total Classes</Para>

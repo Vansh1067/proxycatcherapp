@@ -9,9 +9,7 @@ import { getAllClasses } from '../../Store/Classes/action';
 
 const TimeTable=(props)=>{
     const [showSearch,setShowSearch]=useState(false)
-
     const [loading,setLoading]=useState(false)
-
     const [refreshing,setRefreshing]=useState(false)
     const [refresh,setRefresh]=useState(false)
     const [popup,setPopup]=useState(false)
@@ -26,7 +24,7 @@ const TimeTable=(props)=>{
             setLoading(true)
             AsyncStorage.getItem('userId',(err,userId)=>{
                 getAllClasses(userId).then(res=>{
-                    console.log(res,'classes')
+                    console.log(res.data,'classes')
                     if(res.data.error){
                         ToastAndroid.showWithGravity(
                           res.data.error,
@@ -65,11 +63,11 @@ const TimeTable=(props)=>{
            
           }>
               {
-                  classes.map((cls,i)=>{
+                  classes.length>0?classes.map((cls,i)=>{
                       console.log(cls)
                     return     <AnalyticsCard hide={1} key={i}  heading={`${cls.name} - ${cls.code}`} text1={cls.year} text2={cls.semester} text3={cls.teacherId.name}/>
    
-                  })
+                  }):<View style={{flex:1,alignItems:"center",marginVertical:100}}><Paragraph style={{color:"#00000050"}}>No Classes Found</Paragraph></View>
               }
               </ScrollView>
        

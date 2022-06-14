@@ -34,7 +34,7 @@ const TimeTable=(props)=>{
                     );
                   }else{
                     setTimeTables(res.data.data)
-                    console.log(res.data.data[0].days)
+                    console.log(res.data.data)
                     setLoading(false)
                     setRefreshing(false)
                   }
@@ -42,14 +42,12 @@ const TimeTable=(props)=>{
 
         })
     },[refresh])
-    if(loading){
-        return  <Spinner/>
-    }
+  
     return (<View style={{flex:1}}>
          <Header heading={'Time Table'}  showSearch={showSearch} >
         <Icon name="search" size={22} color="#292F3B"style={{alignSelf:'flex-end'}} onPress={()=>{setShowSearch(!showSearch)}}/> 
           </Header>
-          <Container style={{paddingBottom:0}}>
+          {loading?<Spinner/>:<Container style={{paddingBottom:0}}>
         <Row style={{marginVertical:15}}>
                         <Text><Title style={{color:"#0E7167"}}>{timetables.length} </Title><Title>Time Table</Title></Text>
                         <View style={{flexDirection:'row',alignItems:'center'}}>
@@ -58,26 +56,26 @@ const TimeTable=(props)=>{
                         </View>
         </Row>
         <View style={styles.addMore}>
-                <Icons name="pluscircle" color="#EB5C5C" size={50} onPress={()=>props.navigation.navigate("AddTimeTable",refresh,setRefresh)} />
+                <Icons name="pluscircle" color="#EB5C5C" size={50} onPress={()=>props.navigation.navigate("AddTimeTable",{refresh,setRefresh})} />
         </View>
         <View  style={{...styles.list,justifyContent:"flex-start",marginTop:0}} >
           
         <FilterPopup popup={popup} filter={filter} setPopup={setPopup} setFilter={setFilter}/>
-        <ScrollView showsVerticalScrollIndicator={false} refreshControl={
+        <ScrollView style={{}} showsVerticalScrollIndicator={false} refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
            
           }>
             {
-                timetables.map((t,i)=>{
+               timetables.length>0? timetables.map((t,i)=>{
                    return  <AnalyticsCard key={i}  heading={`${t.year} - ${t.semester}`}  onPress={()=>{props.navigation.navigate('TimeTablesDetails',{data:t})}}/>
 
-                })
+                }):<View style={{flex:1,alignItems:"center",marginVertical:100}}><Paragraph style={{color:"#00000050"}}>No Time Table Found</Paragraph></View>
             }
         </ScrollView>
     
        
 </View>
-</Container>
+</Container>}
         </View>)
 }
 export default TimeTable

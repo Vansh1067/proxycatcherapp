@@ -17,6 +17,10 @@ const Students=(props)=>{
     const [addStudent,setAddStudent]=useState([])
     const [teach,setTeach]=useState([])
     useEffect(()=>{
+      const backhandler= BackHandler.addEventListener('hardwareBackPress', handleBackPress);
+      return () => backhandler.remove();
+     },[])
+    useEffect(()=>{
       setLoading(true)
       if(props.approve){
         AsyncStorage.getItem('userId',(err,userId)=>{
@@ -44,7 +48,7 @@ const Students=(props)=>{
           if(res.data.error){
             ToastAndroid.showWithGravity(
               res.data.error,
-              ToastAndroid.LONG,
+              ToastAndroid.SHORT,
               ToastAndroid.BOTTOM
             );
           }else{
@@ -54,8 +58,9 @@ const Students=(props)=>{
             }
             console.log(UserData,'pp')
             setTeach([...UserData])
-            setLoading(false)
             props?.route?.params?.addStudent? setAddStudent(props.route.params.student):null
+
+            setLoading(false)
             setRefreshing(false)
           }
         })
@@ -65,10 +70,11 @@ const Students=(props)=>{
     
   },[refresh])
     const addStudentHandler=(val)=>{
-      const index= addStudent.findIndex(value=>val._id===value.userId)
+      const index= addStudent.findIndex(value=>val._id===value)
 
       if(index>-1){
-        const filterArray=addStudent.filter((value,i)=>value.userId!==val._id)
+        const filterArray=addStudent.filter((value,i)=>value!==val._id)
+  
         removeStudentToClass({classId:props.route.params.classId,data:val._id}).then((res)=>{
           if(res.data.error){
             ToastAndroid.showWithGravity(
@@ -88,7 +94,7 @@ const Students=(props)=>{
         })
 
        }else{
-         const d={userId:val._id}
+         //const d={userId:val._id}
          
          addStudentToClass({classId:props.route.params.classId,data:val._id}).then((res)=>{
           if(res.data.error){
@@ -98,13 +104,15 @@ const Students=(props)=>{
               ToastAndroid.BOTTOM
             );
           }else{
-            setAddStudent([...addStudent,d])
+            const newData=[...addStudent]
+            newData.push(val._id)
+            setAddStudent(newData)
             ToastAndroid.showWithGravity(
               "Student Add Successfully",
               ToastAndroid.LONG,
               ToastAndroid.BOTTOM
             );
-
+            console.log(addStudent)
           }
 
          })
@@ -134,6 +142,10 @@ const Students=(props)=>{
     }
     const  handleBackPress = () => {
         if(props.navigation.isFocused()){
+          if(props.route?.params?.addStudent){
+           // console.warn('hosgyg')
+            props.route.params.setRefresh(!props.route.params.refresh)
+          }
         props.navigation.goBack()
         return true;
         }else{
@@ -168,7 +180,7 @@ const Students=(props)=>{
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>
         {
-       teach.map((val,i)=>{
+       teach.length>0?teach.map((val,i)=>{
          if(props.approve){
             return   <VideoThumbnail views={`${val.branch} DEPT`} title={`${val.name}`} role={val.year} buttontext={'View Details'}  onPress={()=>props.navigation.navigate('Profile',{userId:val._id,approve:true,setRefresh:setRefresh,refresh:refresh})} onClick={()=>{props.navigation.navigate('Profile',{userId:val._id,approve:true,setRefresh:setRefresh,refresh:refresh})}}/>
 
@@ -187,12 +199,12 @@ const Students=(props)=>{
           return   <VideoThumbnail key={i} views={`${val.branch} DEPT`} title={`${val.name}`}  role={val.year}buttontext={'View Details'}  onPress={()=>props.navigation.navigate('Profile',{userId:val._id,approve:true,setRefresh:setRefresh,refresh:refresh})} onClick={()=>{props.navigation.navigate('Profile',{userId:val._id,approve:true,setRefresh:setRefresh,refresh:refresh})}}/>
 
          }else if(props?.route?.params?.addStudent){
-          const index= addStudent.findIndex(value=>val._id===value.userId)
+          const index= addStudent.findIndex(value=>val._id===value)
           if(index>-1){
-            return   <VideoThumbnail views={`${val.branch} DEPT`} title={`${val.name} `}  role={val.year} select={1} onPress={()=>props.navigation.navigate('Profile',{userId:val._id})} onClick={()=>{addStudentHandler(val)}}/>
+            return   <VideoThumbnail key={i} views={`${val.branch} DEPT`} title={`${val.name} `}  role={val.year} select={1} onPress={()=>props.navigation.navigate('Profile',{userId:val._id})} onClick={()=>{addStudentHandler(val)}}/>
 
           }else{
-            return   <VideoThumbnail views={`${val.branch} DEPT`} title={`${val.name} `} role={val.year} buttontext={'Select'} onPress={()=>props.navigation.navigate('Profile',{userId:val._id})} onClick={()=>{addStudentHandler(val)}}/>
+            return   <VideoThumbnail  key={i}  views={`${val.branch} DEPT`} title={`${val.name} `} role={val.year} buttontext={'Select'} onPress={()=>props.navigation.navigate('Profile',{userId:val._id})} onClick={()=>{addStudentHandler(val)}}/>
 
           } 
          }
@@ -201,14 +213,14 @@ const Students=(props)=>{
         
              const index= props.student.findIndex(value=>val._id===value.userId)
             if(index>-1){
-              return   <VideoThumbnail views={`${val.branch} DEPT`} title={`${val.name} `}  role={val.year} select={1} onPress={()=>props.navigation.navigate('Profile',{userId:val._id})} onClick={()=>{addHandler(val)}}/>
+              return   <VideoThumbnail  key={i}  views={`${val.branch} DEPT`} title={`${val.name} `}  role={val.year} select={1} onPress={()=>props.navigation.navigate('Profile',{userId:val._id})} onClick={()=>{addHandler(val)}}/>
 
             }else{
-              return   <VideoThumbnail views={`${val.branch} DEPT`} title={`${val.name} `} role={val.year} buttontext={'Select'} onPress={()=>props.navigation.navigate('Profile',{userId:val._id})} onClick={()=>{addHandler(val)}}/>
+              return   <VideoThumbnail  key={i}  views={`${val.branch} DEPT`} title={`${val.name} `} role={val.year} buttontext={'Select'} onPress={()=>props.navigation.navigate('Profile',{userId:val._id})} onClick={()=>{addHandler(val)}}/>
 
             } 
           }
-          })
+          }):<View style={{flex:1,alignItems:"center",marginVertical:100}}><Paragraph style={{color:"#00000050"}}>No Student Found</Paragraph></View>
         }
         </ScrollView>
 

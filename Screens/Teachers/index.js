@@ -124,7 +124,7 @@ const Teachers=(props)=>{
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>
         {
-       teach.map((val,i)=>{
+       teach.length>0?teach.map((val,i)=>{
          if(props.approve){
             return   <VideoThumbnail key={i} views={`${val.branch} DEPT`} title={`${val.name}`}  role={val.role}buttontext={'View Details'}  onPress={()=>props.navigation.navigate('Profile',{userId:val._id,approve:true,setRefresh:setRefresh,refresh:refresh})} onClick={()=>{props.navigation.navigate('Profile',{userId:val._id,approve:true,setRefresh:setRefresh,refresh:refresh})}}/>
 
@@ -153,7 +153,7 @@ const Teachers=(props)=>{
 
             }
           }
-          })
+          }):<View style={{flex:1,alignItems:"center",marginVertical:100}}><Paragraph style={{color:"#00000050"}}>No Teacher Found</Paragraph></View>
         }
         </ScrollView>
        

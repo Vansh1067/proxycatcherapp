@@ -8,7 +8,7 @@ import { Container, Paragraph,Header,Title ,Para, Spinner} from '../../shared'
 
 const TimeTableDetails=(props)=>{
     const [data,setData]=useState()
-    const [loading,setLoading]=useState(false)
+    const [loading,setLoading]=useState(true)
     useEffect(()=>{
         setLoading(true)
         setData(props.route.params.data)
@@ -61,7 +61,7 @@ const TimeTableDetails=(props)=>{
         return <Spinner/>
     }
     return <View style={{flex:1}}>
-    <Header heading={`${data?.year} - ${data?.semester} - ${data?.branch}`} icon="arrowleft" onPress={()=>handleBackPress()}/>
+    <Header heading={`${data?.year||""} - ${data?.semester||""} - ${data?.branch||""}`} icon="arrowleft" onPress={()=>handleBackPress()}/>
     <Container >
     <ScrollView style={{marginVertical:15}}>
 

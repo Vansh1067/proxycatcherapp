@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from 'react'
+import React,{useState,useEffect,useContext} from 'react'
 import {View,Text,Image,ScrollView, TouchableOpacity,RefreshControl,AsyncStorage,Share, Linking} from 'react-native'
 import { Container, Paragraph,Row ,OptionCard, Title, Para, Popup,Buttons, Spinner, RedirectFunction} from '../../shared'
 import FontAwesome  from 'react-native-vector-icons/FontAwesome'
@@ -9,13 +9,14 @@ import {  TouchableWithoutFeedback } from 'react-native-gesture-handler'
 
 import { CommonActions } from '@react-navigation/native';
 import { getProfileDetails } from '../../Store/Profile/action'
+import { AppStateContext } from '../../context'
 
 
 const MoreHome=(props)=>{
     const [logout,setlogout]=useState(false)
     const [data,setData]=useState({})
     const [userId,setUserId]=useState('')
-
+    const {user}=useContext(AppStateContext)
     const [refreshing,setRefreshing]=useState(false)
     const [refresh,setRefresh]=useState(false)
 
@@ -111,9 +112,9 @@ const MoreHome=(props)=>{
             <OptionCard text="Polls" onPress={()=>props.navigation.navigate('Polls')}>
             <FontAwesome name="line-chart" size={18} color="#292F3B" style={{marginRight:20}}/>
             </OptionCard>
-            <OptionCard text="Approval Request" onPress={()=>props.navigation.navigate('Approval')}>
+            {user==3?<OptionCard text="Approval Request" onPress={()=>props.navigation.navigate('Approval')}>
             <MaterialCommunityIcons name="wallet" size={18} color="#292F3B" style={{marginRight:20}}/>
-            </OptionCard>
+            </OptionCard>:null}
             <OptionCard text="Notices" onPress={()=>props.navigation.navigate('Notices')} badge={data?.notices||null}>
             <MaterialCommunityIcons name="message-bulleted" size={18} color="#292F3B" style={{marginRight:20}}/>
             </OptionCard>

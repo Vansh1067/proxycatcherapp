@@ -75,10 +75,10 @@ const Notices=(props)=>{
            
           }>
             {
-              notice.map((nt,i)=>{
+              notice.length>0?notice.map((nt,i)=>{
                 return <NoticeCard  image={null} read={false} title={nt.description.slice(0,25)} createdAt={new Date(nt.createdAt)}onPress={()=>props.navigation.navigate('NoticeDetails',{noticeId:nt._id})}/>
 
-              })
+              }):<View style={{flex:1,alignItems:"center",marginVertical:100}}><Paragraph style={{color:"#00000050"}}>No Notice Found</Paragraph></View>
             }
           
             </ScrollView>

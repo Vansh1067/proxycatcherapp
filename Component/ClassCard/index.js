@@ -3,7 +3,7 @@ import { View ,Text, TouchableOpacity} from 'react-native'
 import { Dot, Para, Paragraph, Row } from '../../shared'
 
 import Styles from './styles'
-const ClassCard=({title,year,sem,time,leftTitle,RightTitle,LeftButton,RightButton})=>{
+const ClassCard=({title,year,sem,time,leftTitle,RightTitle,LeftButton,RightButton,leftDis,rightDis})=>{
     return <View><View style={Styles.textCard}>
         <View style={{padding:22}}>
            <Para style={{marginBottom:20}}>{title}</Para>
@@ -24,9 +24,9 @@ const ClassCard=({title,year,sem,time,leftTitle,RightTitle,LeftButton,RightButto
             </Row>
         </View>
         <View style={{backgroundColor:'#F0F0F0',padding:15}}>
-            <Row>
-                <TouchableOpacity onPress={LeftButton}><Paragraph style={{color:'#0C5C8F'}}>{leftTitle}</Paragraph></TouchableOpacity>
-                <TouchableOpacity onPress={RightButton}><Paragraph style={{color:'#E40000'}}>{RightTitle}</Paragraph></TouchableOpacity>
+            <Row style={{justifyContent:leftTitle?'space-between':'center'}}>
+                <TouchableOpacity onPress={leftDis?()=>{}:LeftButton}><Paragraph style={{color:leftDis?'#0C5C8F80':'#0C5C8F'}}>{leftTitle}</Paragraph></TouchableOpacity>
+                <TouchableOpacity onPress={rightDis?()=>{}:RightButton}><Paragraph style={{color:rightDis?'#E4000050':'#E40000'}}>{RightTitle}</Paragraph></TouchableOpacity>
             </Row> 
         </View> 
     </View>
